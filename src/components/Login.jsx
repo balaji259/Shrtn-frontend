@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Mail, Lock, Star, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import api from '../api/api';
 import toast from 'react-hot-toast';
+import { ContextApi, ContextProvider } from '../context/ContextApi';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const Login = () => {
   });
   const [stars, setStars] = useState([]);
   const navigate = useNavigate();
+  const { setToken } = useContext(ContextApi)
 
   // Generate random stars for background
   useEffect(() => {
@@ -45,12 +47,15 @@ const Login = () => {
      try{
          
          const response = await api.post(`/api/auth/login`, formData);
+         console.log(response.data);
+         setToken(response.data.token);
+         localStorage.setItem("token",response.data.token);
          toast.success("Login Successful!");
          setFormData({email: '', password: '' });
         //  navigate("/login");
          
      }catch(e){
-         toast.error("Login Failed!")
+         toast.error("Login failed!");
      }
 
    };
