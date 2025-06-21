@@ -4,9 +4,15 @@ import './index.css'
 import App from './App.jsx'
 import { Toaster } from 'react-hot-toast';
 import { ContextProvider } from './context/ContextApi.jsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+
+const queryClient = new QueryClient();
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <QueryClientProvider client={queryClient}>
 
     <ContextProvider>
 
@@ -18,5 +24,6 @@ createRoot(document.getElementById('root')).render(
     />
 
     </ContextProvider>
+  </QueryClientProvider>
   </StrictMode>,
 )
