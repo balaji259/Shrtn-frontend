@@ -159,7 +159,7 @@ const Register = () => {
             <p className="text-gray-400 text-sm">
               Already shortening links?{' '}
               <a
-                onClick={()=>{navigate("/login")}}
+                onClick={()=>{navigate("/")}}
                 className="text-blue-400 hover:text-blue-300 transition-colors duration-300 font-medium hover:underline cursor-pointer"
               >
                 Login here

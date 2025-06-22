@@ -13,7 +13,12 @@ const Login = () => {
   });
   const [stars, setStars] = useState([]);
   const navigate = useNavigate();
-  const { setToken } = useContext(ContextApi)
+  const { token, setToken } = useContext(ContextApi)
+
+  useEffect(()=>{
+    if(token)
+      navigate("/dashboard");
+  },[])
 
   // Generate random stars for background
   useEffect(() => {
