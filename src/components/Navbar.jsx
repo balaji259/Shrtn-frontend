@@ -1,8 +1,18 @@
 import React from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useContext} from "react";
+import { ContextApi } from '../context/ContextApi';
 
 const Navbar = () => {
+
+    const {token,setToken} =useContext(ContextApi);
+    const navigate = useNavigate();
+
   const handleLogout = () => {
-    console.log("User logged out");
+    setToken(null);
+    localStorage.removeItem("token");
+    navgigate("/");
+    // console.log("User logged out");
   };
 
   return (

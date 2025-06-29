@@ -48,7 +48,7 @@ const Register = () => {
         const response = await api.post(`/api/auth/register`, formData);
         toast.success("User registered Successfully!");
         setFormData({ username: '', email: '', password: '' });
-        navigate("/login");
+        navigate("/");
 
     }catch(e){
         toast.error("Registration Failed!")

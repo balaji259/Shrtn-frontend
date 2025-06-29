@@ -43,6 +43,7 @@ export const useFetchTotalClicks = (token, onError) => {
           },
         }
       );
+      
       return response;
     },
     select: (data) => {
@@ -50,6 +51,7 @@ export const useFetchTotalClicks = (token, onError) => {
         clickDate: key,
         count: data.data[key],
       }));
+      console.log(convertToArray)
       return convertToArray;
     },
     onError,
