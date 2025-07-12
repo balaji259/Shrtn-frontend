@@ -21,10 +21,15 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
     const [selectedUrl, setSelectedUrl] = useState("");
     const [analyticsData, setAnalyticsData] = useState([]);
 
-    const subDomain = import.meta.env.VITE_REACT_SUBDOMAIN.replace(
-        /^https?:\/\//,
-        ""
-      );
+    // const subDomain = import.meta.env.VITE_REACT_SUBDOMAIN.replace(
+    //     /^https?:\/\//,
+    //     ""
+    //   );
+
+     const subDomain = import.meta.env.VITE_REACT_FRONT_END_URL.replace(
+    /^https?:\/\//,
+    ""
+  );
 
     const analyticsHandler = (shortUrl) => {
         if (!analyticToggle) {
@@ -73,11 +78,11 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
                 {subDomain + "/" + `${shortUrl}`}
             </a> */}
 
-            <Link
+               <Link
               target='_'
               className='text-[17px]  font-montserrat font-[600] text-linkColor'
-              to={import.meta.env.VITE_REACT_FRONT_END_URL + "/" + `${shortUrl}`}>
-                  {subDomain + "/" + `${shortUrl}`}
+              to={import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + `${shortUrl}`}>
+                  {subDomain + "/s/" + `${shortUrl}`}
             </Link>
             <FaExternalLinkAlt className="text-linkColor" />
             </div>

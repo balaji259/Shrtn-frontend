@@ -5,6 +5,7 @@ import axios from "axios";
 import api from '../api/api';
 import toast from 'react-hot-toast';
 import { ContextApi, ContextProvider } from '../context/ContextApi';
+import { responsiveFontSizes } from '@mui/material';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -53,8 +54,9 @@ const Login = () => {
          
          const response = await api.post(`/api/auth/login`, formData);
          console.log(response.data);
-         setToken(response.data.token);
-         localStorage.setItem("token",response.data.token);
+         console.log(response.data);
+         setToken(response.data.name);
+         localStorage.setItem("token",response.data.name);
          toast.success("Login Successful!");
          setFormData({email: '', password: '' });
          navigate("/dashboard");
