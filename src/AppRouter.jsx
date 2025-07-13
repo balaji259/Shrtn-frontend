@@ -13,7 +13,7 @@ const AppRouter = ()=>{
       const location = useLocation();
   
   // Define paths where Navbar should be hidden
-  const hideHeaderFooter = location.pathname.startsWith("/s");
+  const hideHeaderFooter = location.pathname.startsWith("/s") || location.pathname=="/register" || location.pathname=="/" ;
 
     return(
 
