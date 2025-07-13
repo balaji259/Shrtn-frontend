@@ -118,7 +118,8 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
         <div className="flex  flex-1  sm:justify-end items-center gap-4">
             <CopyToClipboard
                 onCopy={() => setIsCopied(true)}
-                text={`${import.meta.env.VITE_REACT_FRONT_END_URL  +"/s/" `${shortUrl}`}`}
+                // text={`${import.meta.env.VITE_REACT_FRONT_END_URL}/s/${shortUrl}`}
+                text={`${import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + `${shortUrl}`}`}
             >
                 <div className="flex cursor-pointer gap-1 items-center bg-blue-700 py-2  font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white ">
                 <button className="">{isCopied ? "Copied" : "Copy"}</button>
