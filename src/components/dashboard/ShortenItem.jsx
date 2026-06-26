@@ -236,11 +236,10 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
                   <div className="h-64 relative w-full mb-4">
                     <Graph graphData={analyticsData} />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2 mb-6">
                     {renderBreakdownCard("Devices", deviceData)}
                     {renderBreakdownCard("Browsers", browserData)}
                     {renderBreakdownCard("Platforms (OS)", osData)}
-                    {renderBreakdownCard("Referrers", referrerData)}
                   </div>
                 </>
               )}

@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import toast from 'react-hot-toast';
 import { Lock, ArrowRight, Home } from 'lucide-react';
 
 const ShortenUrlPage = () => {
     const { url } = useParams();
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const isPasswordRequired = searchParams.get("passwordRequired") === "true";
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [passwordRequired, setPasswordRequired] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [unlocking, setUnlocking] = useState(false);
 
     useEffect(() => {
-        if (url && !isPasswordRequired) {
-            window.location.href = import.meta.env.VITE_BACKEND_URL + `/${url}`;
+        const resolveLink = async () => {
+            try {
+                const { data } = await api.get(`/api/urls/resolve/${url}`);
+                if (data.passwordRequired) {
+                    setPasswordRequired(true);
+                    setLoading(false);
+                } else {
+                    window.location.href = data.originalUrl;
+                }
+            } catch (error) {
+                const errorMsg = error.response?.data?.message || "This short link does not exist or has been deleted";
+                navigate(`/error?message=${encodeURIComponent(errorMsg)}`);
+            }
+        };
+
+        if (url) {
+            resolveLink();
         }
-    }, [url, isPasswordRequired]);
+    }, [url, navigate]);
 
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
@@ -24,7 +39,7 @@ const ShortenUrlPage = () => {
             toast.error("Password cannot be empty");
             return;
         }
-        setLoading(true);
+        setUnlocking(true);
         try {
             const { data } = await api.post(`/api/urls/verify-password/${url}`, { password: password.trim() });
             window.location.href = data.originalUrl;
@@ -32,11 +47,27 @@ const ShortenUrlPage = () => {
             const errorMsg = error.response?.data?.message || "Incorrect password";
             toast.error(errorMsg);
         } finally {
-            setLoading(false);
+            setUnlocking(false);
         }
     };
 
-    if (isPasswordRequired) {
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-950 flex flex-col justify-center items-center font-montserrat text-white gap-3 relative overflow-hidden">
+                {/* Decorative background elements */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+                </div>
+                <div className="relative z-10 flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin" />
+                    <p className="text-slate-300 text-sm tracking-wide animate-pulse">Redirecting you to your destination...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (passwordRequired) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-950 flex items-center justify-center p-4 relative overflow-hidden">
                 {/* Decorative background elements */}
@@ -68,16 +99,16 @@ const ShortenUrlPage = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-montserrat"
                                 required
-                                disabled={loading}
+                                disabled={unlocking}
                             />
                         </div>
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={unlocking}
                             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:scale-102 flex items-center justify-center gap-2 cursor-pointer font-montserrat"
                         >
-                            <span>{loading ? "Unlocking..." : "Unlock & Proceed"}</span>
+                            <span>{unlocking ? "Unlocking..." : "Unlock & Proceed"}</span>
                             <ArrowRight className="w-5 h-5" />
                         </button>
                     </form>
@@ -94,12 +125,7 @@ const ShortenUrlPage = () => {
         );
     }
 
-    return (
-        <div className="min-h-screen bg-slate-900 flex flex-col justify-center items-center font-montserrat text-white gap-3">
-            <div className="w-12 h-12 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin" />
-            <p className="text-slate-400 text-sm tracking-wide">Redirecting you to your destination...</p>
-        </div>
-    );
+    return null;
 };
 
 export default ShortenUrlPage;
