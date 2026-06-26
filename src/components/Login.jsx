@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Mail, Lock, Star, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
 import api from '../api/api';
 import toast from 'react-hot-toast';
-import { ContextApi, ContextProvider } from '../context/ContextApi';
-import { responsiveFontSizes } from '@mui/material';
+import { ContextApi } from '../context/ContextApi';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +17,7 @@ const Login = () => {
   useEffect(()=>{
     if(token)
       navigate("/dashboard");
-  },[])
+  },[token, navigate])
 
   // Generate random stars for background
   useEffect(() => {
@@ -61,7 +59,8 @@ const Login = () => {
          setFormData({email: '', password: '' });
          navigate("/dashboard");
          
-     }catch(e){
+     }catch(error){
+         console.error(error);
          toast.error("Login failed!");
      }
 

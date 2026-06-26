@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import ShortenUrlPage from "./components/ShortenUrlPage";
 import Navbar from "./components/Navbar";
+import ErrorPage from "./components/ErrorPage";
 
 
 const AppRouter = ()=>{
@@ -13,7 +14,7 @@ const AppRouter = ()=>{
       const location = useLocation();
   
   // Define paths where Navbar should be hidden
-  const hideHeaderFooter = location.pathname.startsWith("/s") || location.pathname=="/register" || location.pathname=="/" ;
+  const hideHeaderFooter = location.pathname.startsWith("/s") || location.pathname=="/register" || location.pathname=="/" || location.pathname=="/error";
 
     return(
 
@@ -32,6 +33,7 @@ const AppRouter = ()=>{
         {/* <Route path="/dashboard" element={ <DashboardLayout />} /> */}
 
         <Route path="/s/:url" element={<ShortenUrlPage />} />
+        <Route path="/error" element={<ErrorPage />} />
 
         
 

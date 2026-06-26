@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Lock, Star, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
 import api from '../api/api';
 import toast from 'react-hot-toast';
 
@@ -45,12 +44,13 @@ const Register = () => {
     e.preventDefault();
     try{
         
-        const response = await api.post(`/api/auth/register`, formData);
+        await api.post(`/api/auth/register`, formData);
         toast.success("User registered Successfully!");
         setFormData({ username: '', email: '', password: '' });
         navigate("/");
 
-    }catch(e){
+    }catch(error){
+        console.error(error);
         toast.error("Registration Failed!")
     }
  

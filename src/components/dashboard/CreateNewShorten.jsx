@@ -1,9 +1,8 @@
 import React, { useState, useContext } from 'react'
 
-import { ContextApi, ContextProvider } from '../../context/ContextApi';
+import { ContextApi } from '../../context/ContextApi';
 
 import { useForm } from 'react-hook-form';
-import { data } from 'autoprefixer';
 import TextField from '../TextField';
 import { Tooltip } from '@mui/material';
 import { RxCross2 } from 'react-icons/rx';
@@ -24,6 +23,9 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
   } = useForm({
     defaultValues: {
       originalUrl: "",
+      customSlug: "",
+      expirationDate: "",
+      clickLimit: "",
     },
     mode: "onTouched",
   });
@@ -48,11 +50,14 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
             });
           });
 
-          // await refetch();
+          if (refetch) {
+              await refetch();
+          }
           reset();
           setOpen(false);
     } catch (error) {
-        toast.error("Create ShortURL Failed");
+        const errorMsg = error.response?.data?.message || "Create ShortURL Failed";
+        toast.error(errorMsg);
     } finally {
         setLoading(false);
     }
@@ -63,7 +68,7 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
     <div className=" flex justify-center items-center bg-white rounded-md">
     <form
         onSubmit={handleSubmit(createShortUrlHandler)}
-        className="sm:w-[450px] w-[360px] relative  shadow-custom pt-8 pb-5 sm:px-8 px-4 rounded-lg"
+        className="sm:w-[500px] w-[360px] relative  shadow-custom pt-8 pb-5 sm:px-8 px-4 rounded-lg"
       >
 
         <h1 className="font-montserrat sm:mt-0 mt-3 text-center  font-bold sm:text-2xl text-[22px] text-slate-800 ">
@@ -72,7 +77,7 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
 
         <hr className="mt-2 sm:mb-5 mb-3 text-slate-950" />
 
-        <div>
+        <div className="flex flex-col gap-4">
           <TextField
             label="Enter URL"
             required
@@ -83,11 +88,47 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
             register={register}
             errors={errors}
           />
+
+          <TextField
+            label="Custom Alias (Optional)"
+            id="customSlug"
+            placeholder="e.g. my-slug"
+            type="text"
+            register={register}
+            errors={errors}
+            validationPattern={{
+              value: /^[a-zA-Z0-9\-_]+$/,
+              message: "Only letters, numbers, hyphens, and underscores are allowed",
+            }}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <TextField
+              label="Expiration Date (Optional)"
+              id="expirationDate"
+              type="datetime-local"
+              register={register}
+              errors={errors}
+            />
+
+            <TextField
+              label="Click Limit (Optional)"
+              id="clickLimit"
+              placeholder="e.g. 100"
+              type="number"
+              register={register}
+              errors={errors}
+              validationPattern={{
+                value: /^[1-9]\d*$/,
+                message: "Must be a positive integer",
+              }}
+            />
+          </div>
         </div>
 
         <button
-          className="bg-blue-700 font-semibold text-white w-32  bg-custom-gradient  py-2  transition-colors  rounded-md my-3"
-          type="text"
+          className="bg-blue-700 font-semibold text-white w-32  bg-custom-gradient  py-2  transition-colors  rounded-md my-3 mt-5 cursor-pointer hover:bg-blue-800"
+          type="submit"
         >
           {loading ? "Loading..." : "Create"}
         </button>

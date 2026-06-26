@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import Graph from './Graph'
 // import { dummyData } from '../../dummyData/data'
 // import { useStoreContext } from '../../context/ContextApi'
-import { ContextApi, ContextProvider } from '../../context/ContextApi';
+import { ContextApi } from '../../context/ContextApi';
 import { useFetchMyShortUrls, useFetchTotalClicks } from '../../hooks/useQuery'
 import ShortenPopUp from './ShortenPopUp'
 import { Plus } from 'lucide-react';

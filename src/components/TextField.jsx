@@ -10,8 +10,8 @@ const TextField = ({
     message,
     className,
     min,
-    value,
     placeholder,
+    validationPattern,
   }) => {
     return (
       <div className="flex flex-col gap-1">
@@ -37,8 +37,9 @@ const TextField = ({
               ? { value: min, message: "Minimum 6 character is required" }
               : null,
   
-            pattern:
-              type === "email"
+            pattern: validationPattern
+              ? validationPattern
+              : type === "email"
                 ? {
                     value: /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+com+$/,
                     message: "Invalid email",

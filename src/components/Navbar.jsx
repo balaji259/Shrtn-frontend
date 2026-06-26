@@ -1,11 +1,11 @@
 import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useContext} from "react";
 import { ContextApi } from '../context/ContextApi';
 
 const Navbar = () => {
 
-    const {token,setToken} =useContext(ContextApi);
+    const {setToken} =useContext(ContextApi);
     const navigate = useNavigate();
 
   const handleLogout = () => {
