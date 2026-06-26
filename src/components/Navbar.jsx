@@ -16,20 +16,21 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#2A6DF5] px-8 py-4 flex items-center justify-between shadow-lg animate-[fadeIn_0.5s_ease-in-out] relative z-10">
-      
-      {/* Project Name: subtle silver-white gradient */}
-      <div className="text-2xl font-extrabold bg-gradient-to-r from-white via-gray-200 to-white text-transparent bg-clip-text tracking-wide drop-shadow hover:scale-105 transition-transform duration-300">
-        Shrtn
-      </div>
+    <nav className="bg-[#2A6DF5] shadow-lg animate-[fadeIn_0.5s_ease-in-out] relative z-10 w-full">
+      <div className="max-w-7xl lg:w-[90%] w-full mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
+        {/* Project Name: subtle silver-white gradient */}
+        <div className="text-2xl font-extrabold bg-gradient-to-r from-white via-gray-200 to-white text-transparent bg-clip-text tracking-wide drop-shadow hover:scale-105 transition-transform duration-300">
+          Shrtn
+        </div>
 
-      {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="bg-white text-[#2A6DF5] font-semibold px-5 py-2 rounded-full shadow-md hover:text-red-500 hover:ring-2 ring-red-100 transition-all duration-300"
-      >
-        Logout
-      </button>
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="bg-white text-[#2A6DF5] font-semibold px-5 py-2 rounded-full shadow-md hover:text-red-500 hover:ring-2 ring-red-100 transition-all duration-300 cursor-pointer"
+        >
+          Logout
+        </button>
+      </div>
 
       {/* Inline fade-in animation */}
       <style>{`

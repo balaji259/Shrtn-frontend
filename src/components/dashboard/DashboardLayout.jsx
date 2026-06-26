@@ -46,9 +46,9 @@ const DashboardLayout = () => {
                     </div>
                 </div>
             ): ( 
-            <div className="lg:w-[90%] w-full mx-auto py-16">
+            <div className="lg:w-[90%] w-full mx-auto py-8 sm:py-16">
                 {/* Enhanced Chart Container */}
-                <div className="h-96 relative mb-8 bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500">
+                <div className="h-72 sm:h-96 relative mb-8 bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-4 sm:p-8 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500">
                     {totalClicks.length === 0 && (
                          <div className="absolute flex flex-col justify-center sm:items-center items-end w-full left-0 top-0 bottom-0 right-0 m-auto">
                              <div className="text-center space-y-4">
