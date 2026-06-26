@@ -26,6 +26,8 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
       customSlug: "",
       expirationDate: "",
       clickLimit: "",
+      password: "",
+      oneTime: false,
     },
     mode: "onTouched",
   });
@@ -123,6 +125,30 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
                 message: "Must be a positive integer",
               }}
             />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <TextField
+              label="Password Protection (Optional)"
+              id="password"
+              placeholder="e.g. secret-pwd"
+              type="password"
+              register={register}
+              errors={errors}
+            />
+
+            <div className="flex flex-col gap-1 justify-center pt-2 select-none">
+              <label htmlFor="oneTime" className="font-semibold text-md cursor-pointer flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="oneTime"
+                  className="w-5 h-5 cursor-pointer accent-blue-600 rounded border-slate-600 focus:ring-blue-500"
+                  {...register("oneTime")}
+                />
+                <span>One-time Link</span>
+              </label>
+              <p className="text-slate-500 text-xs leading-relaxed">Deactivates instantly after the first visit.</p>
+            </div>
           </div>
         </div>
 

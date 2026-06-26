@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import React, { useEffect, useState, useContext, useCallback } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { FaExternalLinkAlt, FaRegCalendarAlt, FaQrcode } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaRegCalendarAlt, FaQrcode, FaWhatsapp, FaLock } from 'react-icons/fa';
 import { IoCopy } from 'react-icons/io5';
 import { LiaCheckSolid } from 'react-icons/lia';
 import { MdAnalytics, MdOutlineAdsClick } from 'react-icons/md';
@@ -13,7 +13,7 @@ import { Hourglass } from 'react-loader-spinner';
 import Graph from './Graph';
 import toast from 'react-hot-toast';
 
-const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
+const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, isPasswordProtected }) => {
     const { token } = useContext(ContextApi);
     const [isCopied, setIsCopied] = useState(false);
     const [analyticToggle, setAnalyticToggle] = useState(false);
@@ -114,7 +114,20 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
             >
               {subDomain + "/s/" + `${shortUrl}`}
             </Link>
-            <FaExternalLinkAlt className="text-linkColor shrink-0 text-xs sm:text-sm" />
+            <FaExternalLinkAlt className="text-linkColor shrink-0 text-xs sm:text-sm animate-pulse hover:animate-none" />
+            
+            {isPasswordProtected && (
+              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[11px] font-bold px-2 py-0.5 rounded-md border border-amber-200 font-montserrat shadow-sm">
+                <FaLock className="text-[10px]" />
+                Password
+              </span>
+            )}
+ 
+            {oneTime && (
+              <span className="inline-flex items-center bg-rose-50 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-md border border-rose-200 font-montserrat shadow-sm">
+                One-time
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-1">
@@ -166,6 +179,18 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
           >
             <button>QR Code</button>
             <FaQrcode className="text-md" />
+          </div>
+
+          <div
+            onClick={() => {
+              const shareUrl = import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + shortUrl;
+              const text = `Check out this shortened URL: ${shareUrl}`;
+              window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+            }}
+            className="flex cursor-pointer gap-1 items-center bg-green-600 hover:bg-green-700 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white"
+          >
+            <button>WhatsApp</button>
+            <FaWhatsapp className="text-md" />
           </div>
 
           <div
