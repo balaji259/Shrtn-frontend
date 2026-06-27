@@ -71,9 +71,17 @@ const Register = () => {
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
             callback: handleGoogleLoginSuccess
           });
+
+          // Measure actual container width to make Google button responsive
+          let containerWidth = btn.parentElement ? btn.parentElement.clientWidth : 300;
+          if (containerWidth === 0) {
+            containerWidth = Math.min(350, window.innerWidth - 64);
+          }
+          const buttonWidth = Math.min(400, Math.max(200, containerWidth));
+
           window.google.accounts.id.renderButton(
             btn,
-            { theme: "outline", size: "large", width: "350", shape: "rectangular", logo_alignment: "left" }
+            { theme: "outline", size: "large", width: buttonWidth, shape: "rectangular", logo_alignment: "left" }
           );
         } else {
           setTimeout(initializeGoogle, 100);
@@ -128,8 +136,8 @@ const Register = () => {
       <div className="absolute top-1/2 left-10 w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full opacity-20 animate-bounce" style={{ animationDuration: '10s', animationDelay: '4s' }} />
 
       {/* Main Registration Card */}
-      <div className="relative z-10 w-full max-w-md px-4 sm:px-0">
-        <div className="bg-black/30 backdrop-blur-xl border border-white/20 rounded-2xl p-6 sm:p-8 shadow-2xl transform hover:scale-105 transition-all duration-500">
+      <div className="relative z-10 w-full max-w-md">
+        <div className="bg-black/30 backdrop-blur-xl border border-white/20 rounded-2xl p-5 sm:p-8 shadow-2xl transform hover:scale-105 transition-all duration-500">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
