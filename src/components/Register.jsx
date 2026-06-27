@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { User, Mail, Lock, Star, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import toast from 'react-hot-toast';
+import { ContextApi } from '../context/ContextApi';
 
 
 const Register = () => {
@@ -13,6 +14,13 @@ const Register = () => {
   });
   const [stars, setStars] = useState([]);
   const navigate = useNavigate();
+  const { token, setToken } = useContext(ContextApi);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
   // Generate random stars for background
   useEffect(() => {
@@ -39,6 +47,43 @@ const Register = () => {
       [e.target.name]: e.target.value
     });
   };
+
+  const handleGoogleLoginSuccess = async (response) => {
+    try {
+      const idToken = response.credential;
+      const res = await api.post(`/api/auth/google`, { idToken });
+      setToken(res.data.name);
+      localStorage.setItem("token", res.data.name);
+      toast.success("Google Authentication Successful!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data || "Google Sign-in failed!");
+    }
+  };
+
+  useEffect(() => {
+    const initializeGoogle = () => {
+      if (window.google) {
+        const btn = document.getElementById("google-signup-button");
+        if (btn) {
+          window.google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            callback: handleGoogleLoginSuccess
+          });
+          window.google.accounts.id.renderButton(
+            btn,
+            { theme: "outline", size: "large", width: "350", shape: "rectangular", logo_alignment: "left" }
+          );
+        } else {
+          setTimeout(initializeGoogle, 100);
+        }
+      } else {
+        setTimeout(initializeGoogle, 100);
+      }
+    };
+    initializeGoogle();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,11 +192,23 @@ const Register = () => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl relative overflow-hidden group"
+              className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl relative overflow-hidden group mb-4"
             >
               <span className="relative z-10">Register</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
             </button>
+
+            {/* Divider */}
+            <div className="flex items-center my-4">
+              <div className="flex-grow border-t border-white/10"></div>
+              <span className="mx-4 text-gray-400 text-xs uppercase tracking-wider font-semibold">or</span>
+              <div className="flex-grow border-t border-white/10"></div>
+            </div>
+
+            {/* Google Signup Button */}
+            <div className="w-full flex justify-center min-h-[40px]">
+              <div id="google-signup-button"></div>
+            </div>
           </div>
 
           {/* Login Link */}

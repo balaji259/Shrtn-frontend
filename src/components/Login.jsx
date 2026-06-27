@@ -45,26 +45,62 @@ const Login = () => {
     });
   };
 
+  const handleGoogleLoginSuccess = async (response) => {
+    try {
+      const idToken = response.credential;
+      const res = await api.post(`/api/auth/google`, { idToken });
+      setToken(res.data.name);
+      localStorage.setItem("token", res.data.name);
+      toast.success("Google Login Successful!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data || "Google Sign-in failed!");
+    }
+  };
 
- const handleSubmit = async (e) => {
-     e.preventDefault();
-     try{
-         
-         const response = await api.post(`/api/auth/login`, formData);
-         console.log(response.data);
-         console.log(response.data);
-         setToken(response.data.name);
-         localStorage.setItem("token",response.data.name);
-         toast.success("Login Successful!");
-         setFormData({email: '', password: '' });
-         navigate("/dashboard");
-         
-     }catch(error){
-         console.error(error);
-         toast.error("Login failed!");
-     }
+  useEffect(() => {
+    const initializeGoogle = () => {
+      if (window.google) {
+        const btn = document.getElementById("google-signin-button");
+        if (btn) {
+          window.google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            callback: handleGoogleLoginSuccess
+          });
+          window.google.accounts.id.renderButton(
+            btn,
+            { theme: "outline", size: "large", width: "350", shape: "rectangular", logo_alignment: "left" }
+          );
+        } else {
+          setTimeout(initializeGoogle, 100);
+        }
+      } else {
+        setTimeout(initializeGoogle, 100);
+      }
+    };
+    initializeGoogle();
+  }, []);
 
-   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try{
+        
+        const response = await api.post(`/api/auth/login`, formData);
+        console.log(response.data);
+        console.log(response.data);
+        setToken(response.data.name);
+        localStorage.setItem("token",response.data.name);
+        toast.success("Login Successful!");
+        setFormData({email: '', password: '' });
+        navigate("/dashboard");
+        
+    }catch(error){
+        console.error(error);
+        toast.error("Login failed!");
+    }
+
+  };
 
 
   return (
@@ -154,11 +190,23 @@ const Login = () => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl relative overflow-hidden group"
+              className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl relative overflow-hidden group mb-4"
             >
               <span className="relative z-10">Login</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
             </button>
+
+            {/* Divider */}
+            <div className="flex items-center my-4">
+              <div className="flex-grow border-t border-white/10"></div>
+              <span className="mx-4 text-gray-400 text-xs uppercase tracking-wider font-semibold">or</span>
+              <div className="flex-grow border-t border-white/10"></div>
+            </div>
+
+            {/* Google Login Button */}
+            <div className="w-full flex justify-center min-h-[40px]">
+              <div id="google-signin-button"></div>
+            </div>
           </div>
 
           {/* Register Link */}
