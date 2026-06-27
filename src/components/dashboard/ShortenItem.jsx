@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import React, { useEffect, useState, useContext, useCallback } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { FaExternalLinkAlt, FaRegCalendarAlt, FaQrcode, FaWhatsapp, FaLock } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaRegCalendarAlt, FaQrcode, FaWhatsapp, FaLock, FaTrash } from 'react-icons/fa';
 import { IoCopy } from 'react-icons/io5';
 import { LiaCheckSolid } from 'react-icons/lia';
 import { MdAnalytics, MdOutlineAdsClick } from 'react-icons/md';
@@ -13,7 +13,7 @@ import { Hourglass } from 'react-loader-spinner';
 import Graph from './Graph';
 import toast from 'react-hot-toast';
 
-const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, isPasswordProtected }) => {
+const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, isPasswordProtected, expirationDate, id, refetch }) => {
     const { token } = useContext(ContextApi);
     const [isCopied, setIsCopied] = useState(false);
     const [analyticToggle, setAnalyticToggle] = useState(false);
@@ -42,6 +42,25 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
         }
         setAnalyticToggle(!analyticToggle);
     }
+
+    const handleDelete = async () => {
+        if (window.confirm("Are you sure you want to delete this short URL? All associated click events will also be permanently deleted.")) {
+            try {
+                await api.delete(`/api/urls/${id}`, {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                });
+                toast.success("Short URL deleted successfully!");
+                if (refetch) {
+                    refetch();
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error(error.response?.data?.message || "Failed to delete Short URL");
+            }
+        }
+    };
 
     const fetchMyShortUrl = useCallback(async () => {
         setLoader(true);
@@ -128,6 +147,18 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
                 One-time
               </span>
             )}
+
+            {expirationDate && (
+              <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md border font-montserrat shadow-sm ${
+                new Date(expirationDate) < new Date()
+                  ? "bg-red-50 text-red-700 border-red-200"
+                  : "bg-indigo-50 text-indigo-700 border-indigo-200"
+              }`}>
+                {new Date(expirationDate) < new Date()
+                  ? "Expired"
+                  : `Expires: ${dayjs(expirationDate).format("MMM DD, YYYY hh:mm A")}`}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-1">
@@ -199,6 +230,14 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
           >
             <button>Analytics</button>
             <MdAnalytics className="text-md" />
+          </div>
+
+          <div
+            onClick={handleDelete}
+            className="flex cursor-pointer gap-1 items-center bg-red-600 hover:bg-red-700 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white"
+          >
+            <button>Delete</button>
+            <FaTrash className="text-md" />
           </div>
         </div>
       </div>

@@ -126,7 +126,7 @@ const DashboardLayout = () => {
                           
                           {/* Enhanced URL List Container */}
                           <div className="bg-white/50 backdrop-blur-sm border border-white/30 rounded-3xl p-6 shadow-lg">
-                              <ShortenUrlList data={myShortenUrls} />
+                              <ShortenUrlList data={myShortenUrls} refetch={refetch} />
                           </div>
                       </div>
                   )}

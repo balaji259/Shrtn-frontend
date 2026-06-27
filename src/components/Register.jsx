@@ -15,6 +15,7 @@ const Register = () => {
   const [stars, setStars] = useState([]);
   const navigate = useNavigate();
   const { token, setToken } = useContext(ContextApi);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -49,6 +50,7 @@ const Register = () => {
   };
 
   const handleGoogleLoginSuccess = async (response) => {
+    setLoading(true);
     try {
       const idToken = response.credential;
       const res = await api.post(`/api/auth/google`, { idToken });
@@ -59,6 +61,8 @@ const Register = () => {
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data || "Google Sign-in failed!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,6 +99,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try{
         
         await api.post(`/api/auth/register`, formData);
@@ -105,12 +110,26 @@ const Register = () => {
     }catch(error){
         console.error(error);
         toast.error("Registration Failed!")
+    } finally {
+        setLoading(false);
     }
  
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 relative overflow-hidden flex items-center justify-center p-4">
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-white/20 border-t-blue-500 rounded-full animate-spin" />
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-purple-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+          </div>
+          <p className="text-white text-lg font-semibold tracking-wide animate-pulse">
+            Verifying account details...
+          </p>
+        </div>
+      )}
       {/* Animated Stars Background */}
       <div className="absolute inset-0">
         {stars.map((star) => (

@@ -35,7 +35,14 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
   const createShortUrlHandler = async (data) => {
     setLoading(true);
     try {
-        const { data: res } = await api.post("/api/urls/shorten", data, {
+        const payload = { ...data };
+        if (payload.expirationDate) {
+          payload.expirationDate = new Date(payload.expirationDate).toISOString();
+        } else {
+          payload.expirationDate = null;
+        }
+
+        const { data: res } = await api.post("/api/urls/shorten", payload, {
             headers: {
               "Content-Type": "application/json",
               Accept: "application/json",
