@@ -25,25 +25,22 @@ const Graph = ({ graphData }) => {
 
   const data = {
     labels:
-     graphData.length > 0
+      graphData && graphData.length > 0
         ? labels
         : ["", "", "", "", "", "", "", "", "", "", "", "", "", ""],
     datasets: [
       {
-        label: "Total Clicks",
+        label: "Clicks",
         data:
-         graphData.length > 0
+          graphData && graphData.length > 0
             ? userPerDaya
-            : [1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1],
-        backgroundColor:
-         graphData.length > 0 ? "#3b82f6" : "rgba(54, 162, 235, 0.1)",
-        borderColor: "#1D2327",
-        pointBorderColor: "red",
-        fill: true,
-        tension: 0.4,
-        barThickness: 20,
-        categoryPercentage: 1.5,
-        barPercentage: 1.5,
+            : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: "rgba(79, 70, 229, 0.85)", // Indigo 600
+        hoverBackgroundColor: "rgba(79, 70, 229, 1)",
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: 16,
+        maxBarThickness: 24,
       },
     ],
   };
@@ -53,14 +50,41 @@ const Graph = ({ graphData }) => {
     responsive: true,
     plugins: {
       legend: {
-        display: true,
+        display: false, // Cleaner without legend
+      },
+      tooltip: {
+        backgroundColor: "#0f172a", // Slate 900
+        titleColor: "#ffffff",
+        bodyColor: "#e2e8f0",
+        padding: 12,
+        cornerRadius: 8,
+        displayColors: false,
+        titleFont: {
+          family: "Inter, sans-serif",
+          size: 13,
+          weight: "bold",
+        },
+        bodyFont: {
+          family: "Inter, sans-serif",
+          size: 12,
+        },
       },
     },
     scales: {
       y: {
         beginAtZero: true,
+        border: {
+          display: false,
+        },
+        grid: {
+          color: "rgba(226, 232, 240, 0.6)", // Faint Slate 200
+        },
         ticks: {
-          // stepSize: 1,
+          color: "#64748b", // Slate 500
+          font: {
+            family: "Inter, sans-serif",
+            size: 11,
+          },
           callback: function (value) {
             if (Number.isInteger(value)) {
               return value.toString();
@@ -68,37 +92,26 @@ const Graph = ({ graphData }) => {
             return "";
           },
         },
-        title: {
-          display: true,
-          text: "Number Of Clicks",
-          font: {
-            family: "Arial",
-            size: 16,
-            weight: "bold",
-            color: "#FF0000",
-          },
-        },
       },
       x: {
-        beginAtZero: true,
-        // ticks: {
-        //   stepSize: 1,
-        // },
-        title: {
-          display: true,
-          text: "Date",
+        border: {
+          display: false,
+        },
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: "#64748b", // Slate 500
           font: {
-            family: "Arial",
-            size: 16,
-            weight: "bold",
-            color: "#FF0000",
+            family: "Inter, sans-serif",
+            size: 11,
           },
         },
       },
     },
   };
 
-  return <Bar className=" w-full" data={data} options={options}></Bar>;
+  return <Bar className="w-full h-full" data={data} options={options}></Bar>;
 };
 
-export default Graph;
+export default Graph;

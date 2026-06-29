@@ -14,10 +14,10 @@ const TextField = ({
     validationPattern,
   }) => {
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col">
         <label
           htmlFor={id}
-          className={`${className ? className : ""} font-semibold text-md  `}
+          className={`${className ? className : ""} text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5`}
         >
           {label}
         </label>
@@ -28,13 +28,13 @@ const TextField = ({
           placeholder={placeholder}
           className={`${
             className ? className : ""
-          } px-2 py-2 border   outline-none bg-transparent  text-slate-700 rounded-md ${
-            errors[id]?.message ? "border-red-500" : "border-slate-600"
+          } w-full bg-slate-50/50 border px-3.5 py-2.5 text-slate-800 placeholder-slate-400 text-sm rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all ${
+            errors[id]?.message ? "border-red-400 focus:border-red-400 focus:ring-red-400" : "border-slate-200"
           }`}
           {...register(id, {
             required: { value: required, message },
             minLength: min
-              ? { value: min, message: "Minimum 6 character is required" }
+              ? { value: min, message: "Minimum 6 characters is required" }
               : null,
   
             pattern: validationPattern
@@ -55,7 +55,7 @@ const TextField = ({
         />
   
         {errors[id]?.message && (
-          <p className="text-sm font-semibold text-red-600 mt-0">
+          <p className="text-xs font-semibold text-red-500 mt-1">
             {errors[id]?.message}*
           </p>
         )}
@@ -63,4 +63,4 @@ const TextField = ({
     );
   };
   
-  export default TextField;
+  export default TextField;

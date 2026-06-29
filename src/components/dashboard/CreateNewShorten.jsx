@@ -13,8 +13,6 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
     const { token } = useContext(ContextApi);
     const [loading, setLoading] = useState(false);
 
-
-
   const {
     register,
     handleSubmit,
@@ -74,26 +72,23 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
 
 
   return (
-    <div className=" flex justify-center items-center bg-white rounded-md">
-    <form
+    <div className="flex justify-center items-center bg-white">
+      <form
         onSubmit={handleSubmit(createShortUrlHandler)}
-        className="w-[90vw] max-w-[500px] sm:w-[500px] relative  shadow-custom pt-8 pb-5 sm:px-8 px-4 rounded-lg"
+        className="w-[95vw] max-w-[480px] sm:w-[480px] relative border border-slate-200/80 pt-7 pb-6 sm:px-8 px-5 rounded-2xl bg-white flex flex-col gap-4 font-montserrat shadow-lg"
       >
-
-        <h1 className="font-montserrat sm:mt-0 mt-3 text-center  font-bold sm:text-2xl text-[22px] text-slate-800 ">
-                Create New Shorten Url
-        </h1>
-
-        <hr className="mt-2 sm:mb-5 mb-3 text-slate-950" />
+        <h2 className="font-bold text-center text-lg text-slate-800 tracking-tight">
+          Create New Short Link
+        </h2>
 
         <div className="flex flex-col gap-4">
           <TextField
-            label="Enter URL"
+            label="Enter Destination URL"
             required
             id="originalUrl"
-            placeholder="https://example.com"
+            placeholder="https://example.com/very-long-link"
             type="url"
-            message="Url is required"
+            message="Destination URL is required"
             register={register}
             errors={errors}
           />
@@ -101,7 +96,7 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
           <TextField
             label="Custom Alias (Optional)"
             id="customSlug"
-            placeholder="e.g. my-slug"
+            placeholder="e.g. custom-slug"
             type="text"
             register={register}
             errors={errors}
@@ -134,46 +129,48 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
             <TextField
-              label="Password Protection (Optional)"
+              label="Password (Optional)"
               id="password"
-              placeholder="e.g. secret-pwd"
+              placeholder="e.g. secret-123"
               type="password"
               register={register}
               errors={errors}
             />
 
-            <div className="flex flex-col gap-1 justify-center pt-2 select-none">
-              <label htmlFor="oneTime" className="font-semibold text-md cursor-pointer flex items-center gap-2">
+            <div className="flex flex-col gap-0.5 justify-center pt-3 select-none">
+              <label htmlFor="oneTime" className="font-semibold text-xs text-slate-700 cursor-pointer flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="oneTime"
-                  className="w-5 h-5 cursor-pointer accent-blue-600 rounded border-slate-600 focus:ring-blue-500"
+                  className="w-4 h-4 cursor-pointer accent-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
                   {...register("oneTime")}
                 />
                 <span>One-time Link</span>
               </label>
-              <p className="text-slate-500 text-xs leading-relaxed">Deactivates instantly after the first visit.</p>
+              <p className="text-[10px] text-slate-400">Deactivates after the first redirect visit.</p>
             </div>
           </div>
         </div>
 
         <button
-          className="bg-blue-700 font-semibold text-white w-32  bg-custom-gradient  py-2  transition-colors  rounded-md my-3 mt-5 cursor-pointer hover:bg-blue-800"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-all cursor-pointer text-sm w-full mt-2 shadow-sm flex justify-center items-center"
           type="submit"
+          disabled={loading}
         >
-          {loading ? "Loading..." : "Create"}
+          {loading ? "Creating..." : "Create Short Link"}
         </button>
 
         {!loading && (
           <Tooltip title="Close">
             <button
+              type="button"
               disabled={loading}
               onClick={() => setOpen(false)}
-              className=" absolute right-2 top-2  "
+              className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <RxCross2 className="text-slate-800   text-3xl" />
+              <RxCross2 className="text-2xl" />
             </button>
           </Tooltip>
         )}

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FaExternalLinkAlt, FaRegCalendarAlt, FaQrcode, FaWhatsapp, FaLock, FaTrash } from 'react-icons/fa';
 import { IoCopy } from 'react-icons/io5';
@@ -7,7 +7,6 @@ import { LiaCheckSolid } from 'react-icons/lia';
 import { MdAnalytics, MdOutlineAdsClick } from 'react-icons/md';
 import api from '../../api/api';
 import { Link } from 'react-router-dom';
-// import { useStoreContext } from '../../context/ContextApi';
 import { ContextApi } from '../../context/ContextApi';
 import { Hourglass } from 'react-loader-spinner';
 import Graph from './Graph';
@@ -26,15 +25,10 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
     const [osData, setOsData] = useState({});
     const [deviceData, setDeviceData] = useState({});
 
-    // const subDomain = import.meta.env.VITE_REACT_SUBDOMAIN.replace(
-    //     /^https?:\/\//,
-    //     ""
-    //   );
-
-     const subDomain = import.meta.env.VITE_REACT_FRONT_END_URL.replace(
-    /^https?:\/\//,
-    ""
-  );
+    const subDomain = import.meta.env.VITE_REACT_FRONT_END_URL.replace(
+      /^https?:\/\//,
+      ""
+    );
 
     const analyticsHandler = (shortUrl) => {
         if (!analyticToggle) {
@@ -93,7 +87,6 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
         }
     }, [selectedUrl, token]);
 
-
     useEffect(() => {
         if (selectedUrl) {
             fetchMyShortUrl();
@@ -102,19 +95,32 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
 
     const renderBreakdownCard = (title, data) => {
       const sortedEntries = Object.entries(data || {}).sort((a, b) => b[1] - a[1]);
+      const totalVal = sortedEntries.reduce((sum, [, val]) => sum + val, 0);
+
       return (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex-1 min-w-[200px] shadow-sm">
-          <h4 className="text-slate-700 font-bold text-xs mb-3 font-montserrat uppercase tracking-wider border-b border-slate-200 pb-1">{title}</h4>
+        <div className="bg-slate-50/50 border border-slate-100 rounded-xl p-4 flex-1 min-w-[200px] shadow-sm">
+          <h4 className="text-slate-500 font-bold text-[10px] mb-3 font-montserrat uppercase tracking-wider border-b border-slate-200/60 pb-1.5">{title}</h4>
           {sortedEntries.length === 0 ? (
-            <p className="text-slate-400 text-xs font-montserrat italic">No data</p>
+            <p className="text-slate-400 text-xs italic">No data available</p>
           ) : (
-            <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
-              {sortedEntries.map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center text-xs font-montserrat">
-                  <span className="text-slate-600 font-medium truncate max-w-[120px]">{key}</span>
-                  <span className="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">{value}</span>
-                </div>
-              ))}
+            <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
+              {sortedEntries.map(([key, value]) => {
+                const pct = totalVal > 0 ? (value / totalVal) * 100 : 0;
+                return (
+                  <div key={key} className="text-xs font-montserrat">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-slate-600 font-semibold truncate max-w-[120px]" title={key}>{key}</span>
+                      <span className="text-slate-700 font-bold">{value} <span className="text-slate-400 font-normal">({pct.toFixed(0)}%)</span></span>
+                    </div>
+                    <div className="w-full bg-slate-200/60 rounded-full h-1.5">
+                      <div 
+                        className="bg-indigo-600 h-1.5 rounded-full transition-all duration-500" 
+                        style={{ width: `${pct}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -122,37 +128,39 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
     };
 
   return (
-    <div className={`bg-slate-100 shadow-lg border border-dotted border-slate-500 px-4 sm:px-6 sm:py-1 py-3 rounded-md transition-all duration-100`}>
-      <div className={`flex sm:flex-row flex-col sm:justify-between w-full sm:gap-0 gap-5 py-5`}>
-        <div className="flex-1 sm:space-y-1 max-w-full overflow-hidden">
-          <div className="text-slate-900 pb-1 sm:pb-0 flex items-center gap-2 flex-wrap">
+    <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        {/* Left Side: URL Info and Metadata */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-1.5">
             <Link
               target="_blank"
-              className="text-[15px] sm:text-[17px] font-montserrat font-[600] text-linkColor break-all"
+              className="text-base font-bold text-indigo-600 hover:text-indigo-800 break-all transition-colors font-montserrat"
               to={import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + `${shortUrl}`}
             >
               {subDomain + "/s/" + `${shortUrl}`}
             </Link>
-            <FaExternalLinkAlt className="text-linkColor shrink-0 text-xs sm:text-sm animate-pulse hover:animate-none" />
+            <FaExternalLinkAlt className="text-indigo-400 shrink-0 text-xs cursor-pointer hover:text-indigo-600 transition-colors" />
             
             {isPasswordProtected && (
-              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[11px] font-bold px-2 py-0.5 rounded-md border border-amber-200 font-montserrat shadow-sm">
-                <FaLock className="text-[10px]" />
+              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-100 font-montserrat">
+                <FaLock className="text-[9px]" />
                 Password
               </span>
             )}
  
             {oneTime && (
-              <span className="inline-flex items-center bg-rose-50 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-md border border-rose-200 font-montserrat shadow-sm">
+              <span className="inline-flex items-center bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-rose-100 font-montserrat">
                 One-time
               </span>
             )}
 
             {expirationDate && (
-              <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md border font-montserrat shadow-sm ${
+              <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border font-montserrat ${
                 new Date(expirationDate) < new Date()
-                  ? "bg-red-50 text-red-700 border-red-200"
-                  : "bg-indigo-50 text-indigo-700 border-indigo-200"
+                  ? "bg-red-50 text-red-700 border-red-100"
+                  : "bg-blue-50 text-blue-700 border-blue-100"
               }`}>
                 {new Date(expirationDate) < new Date()
                   ? "Expired"
@@ -161,140 +169,147 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
             )}
           </div>
 
-          <div className="flex items-center gap-1">
-            <h3 className="text-slate-700 font-[400] text-[14px] sm:text-[17px] break-all leading-relaxed">
+          <div className="mb-3">
+            <span className="text-slate-400 text-sm break-all font-montserrat block truncate max-w-xl" title={originalUrl}>
               {originalUrl}
-            </h3>
+            </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-2 pt-6">
-            <div className="flex gap-1 items-center font-semibold text-green-800">
-              <span>
-                <MdOutlineAdsClick className="text-[20px] sm:text-[22px] me-1" />
-              </span>
-              <span className="text-[14px] sm:text-[16px]">{clickCount}</span>
-              <span className="text-[13px] sm:text-[15px]">
-                {clickCount === 0 || clickCount === 1 ? "Click" : "Clicks"}
-              </span>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+            <div className="flex items-center gap-1 text-slate-500 text-xs font-semibold">
+              <MdOutlineAdsClick className="text-sm text-slate-400" />
+              <span>{clickCount} {clickCount === 1 ? "click" : "clicks"}</span>
             </div>
 
-            <div className="flex items-center gap-2 font-semibold text-slate-800">
-              <span>
-                <FaRegCalendarAlt className="text-sm sm:text-base" />
-              </span>
-              <span className="text-[14px] sm:text-[17px]">
-                {dayjs(createdDate).format("MMM DD, YYYY")}
-              </span>
+            <div className="flex items-center gap-1 text-slate-500 text-xs font-semibold">
+              <FaRegCalendarAlt className="text-xs text-slate-400" />
+              <span>{dayjs(createdDate).format("MMM DD, YYYY")}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-1 sm:justify-end items-center gap-4 flex-wrap">
+        {/* Right Side: Compact Icon Actions */}
+        <div className="flex items-center gap-2 flex-wrap md:self-center">
+          {/* Copy Button */}
           <CopyToClipboard
-            onCopy={() => setIsCopied(true)}
+            onCopy={() => {
+              setIsCopied(true);
+              toast.success("Short URL Copied!", { id: "copy-toast" });
+              setTimeout(() => setIsCopied(false), 2000);
+            }}
             text={`${import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + `${shortUrl}`}`}
           >
-            <div className="flex cursor-pointer gap-1 items-center bg-blue-700 hover:bg-blue-800 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white">
-              <button>{isCopied ? "Copied" : "Copy"}</button>
-              {isCopied ? (
-                <LiaCheckSolid className="text-md" />
-              ) : (
-                <IoCopy className="text-md" />
-              )}
-            </div>
+            <button
+              title="Copy Link"
+              className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-center ${
+                isCopied
+                  ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                  : "bg-slate-50 hover:bg-indigo-50 border-slate-100 hover:border-indigo-100 text-slate-500 hover:text-indigo-600"
+              }`}
+            >
+              {isCopied ? <LiaCheckSolid className="text-base" /> : <IoCopy className="text-base" />}
+            </button>
           </CopyToClipboard>
 
-          <div
+          {/* QR Code Button */}
+          <button
             onClick={() => setQrVisible(true)}
-            className="flex cursor-pointer gap-1 items-center bg-emerald-700 hover:bg-emerald-800 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white"
+            title="QR Code"
+            className="p-2.5 rounded-xl border bg-slate-50 hover:bg-emerald-50 border-slate-100 hover:border-emerald-100 text-slate-500 hover:text-emerald-600 transition-all cursor-pointer flex items-center justify-center"
           >
-            <button>QR Code</button>
-            <FaQrcode className="text-md" />
-          </div>
+            <FaQrcode className="text-base" />
+          </button>
 
-          <div
+          {/* WhatsApp Button */}
+          <button
             onClick={() => {
               const shareUrl = import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + shortUrl;
               const text = `Check out this shortened URL: ${shareUrl}`;
               window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
             }}
-            className="flex cursor-pointer gap-1 items-center bg-green-600 hover:bg-green-700 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white"
+            title="Share via WhatsApp"
+            className="p-2.5 rounded-xl border bg-slate-50 hover:bg-green-50 border-slate-100 hover:border-green-100 text-slate-500 hover:text-green-600 transition-all cursor-pointer flex items-center justify-center"
           >
-            <button>WhatsApp</button>
-            <FaWhatsapp className="text-md" />
-          </div>
+            <FaWhatsapp className="text-base" />
+          </button>
 
-          <div
+          {/* Analytics Button */}
+          <button
             onClick={() => analyticsHandler(shortUrl)}
-            className="flex cursor-pointer gap-1 items-center bg-rose-700 hover:bg-rose-800 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white"
+            title="Analytics"
+            className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-center ${
+              analyticToggle
+                ? "bg-blue-50 border-blue-200 text-blue-600"
+                : "bg-slate-50 hover:bg-blue-50 border-slate-100 hover:border-blue-100 text-slate-500 hover:text-blue-600"
+            }`}
           >
-            <button>Analytics</button>
-            <MdAnalytics className="text-md" />
-          </div>
+            <MdAnalytics className="text-base" />
+          </button>
 
-          <div
+          {/* Delete Button */}
+          <button
             onClick={handleDelete}
-            className="flex cursor-pointer gap-1 items-center bg-red-600 hover:bg-red-700 transition-colors py-2 font-semibold shadow-md shadow-slate-500 px-6 rounded-md text-white"
+            title="Delete Short URL"
+            className="p-2.5 rounded-xl border bg-slate-50 hover:bg-rose-50 border-slate-100 hover:border-rose-100 text-slate-500 hover:text-rose-600 transition-all cursor-pointer flex items-center justify-center"
           >
-            <button>Delete</button>
-            <FaTrash className="text-md" />
-          </div>
+            <FaTrash className="text-base" />
+          </button>
         </div>
       </div>
 
-      <React.Fragment>
-        <div className={`${
-          analyticToggle ? "flex" : "hidden"
-        } flex-col gap-6 sm:mt-0 mt-5 border-t-2 w-[100%] pt-6 overflow-hidden h-auto`}>
+      {/* Expandable Analytics Section */}
+      {analyticToggle && (
+        <div className="mt-5 pt-5 border-t border-slate-100">
           {loader ? (
-            <div className="min-h-[300px] flex justify-center items-center w-full">
-              <div className="flex flex-col items-center gap-1">
+            <div className="py-12 flex justify-center items-center w-full">
+              <div className="flex flex-col items-center gap-2">
                 <Hourglass
                   visible={true}
-                  height="50"
-                  width="50"
+                  height="40"
+                  width="40"
                   ariaLabel="hourglass-loading"
-                  colors={['#306cce', '#72a1ed']}
+                  colors={['#4f46e5', '#818cf8']}
                 />
-                <p className="text-slate-700">Please Wait...</p>
+                <p className="text-xs text-slate-400 font-medium">Fetching details...</p>
               </div>
             </div>
           ) : (
             <>
               {analyticsData.length === 0 ? (
-                <div className="flex flex-col justify-center items-center py-10 w-full">
-                  <h1 className="text-slate-800 font-montserrat sm:text-2xl text-[15px] font-bold mb-1">
-                    No Data For This Time Period
-                  </h1>
-                  <h3 className="sm:w-96 w-[90%] text-center sm:text-lg text-[12px] text-slate-600">
-                    Share your short link to view where your engagements are coming from
-                  </h3>
+                <div className="text-center py-8">
+                  <h4 className="text-slate-700 font-bold text-sm mb-1 font-montserrat">
+                    No Analytics Data Yet
+                  </h4>
+                  <p className="text-slate-400 text-xs max-w-xs mx-auto">
+                    Share your short link to gather referrer, device, and location analytics.
+                  </p>
                 </div>
               ) : (
-                <>
-                  <div className="h-64 relative w-full mb-4">
+                <div className="space-y-5">
+                  <div className="h-64 relative w-full border border-slate-100 rounded-xl p-3 bg-slate-50/20">
                     <Graph graphData={analyticsData} />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
                     {renderBreakdownCard("Devices", deviceData)}
                     {renderBreakdownCard("Browsers", browserData)}
                     {renderBreakdownCard("Platforms (OS)", osData)}
                   </div>
-                </>
+                </div>
               )}
             </>
           )}
         </div>
-      </React.Fragment>
+      )}
 
+      {/* QR Code Modal Overlay */}
       {qrVisible && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl relative border border-slate-100 flex flex-col items-center">
-            <h3 className="text-slate-800 font-bold text-xl mb-4 text-center font-montserrat">QR Code for Short URL</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-xs w-full mx-4 shadow-xl border border-slate-100 flex flex-col items-center">
+            <h3 className="text-slate-800 font-bold text-base mb-4 text-center font-montserrat">QR Code</h3>
             <img
               src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(import.meta.env.VITE_REACT_FRONT_END_URL + "/s/" + shortUrl)}`}
               alt="QR Code"
-              className="w-48 h-48 border border-slate-200 rounded-lg p-2 bg-slate-50 mb-6"
+              className="w-44 h-44 border border-slate-100 rounded-xl p-3 bg-slate-50 mb-5"
             />
             <div className="flex gap-3 w-full">
               <button
@@ -317,13 +332,13 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
                     toast.error("Download failed");
                   }
                 }}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-center cursor-pointer transition-colors font-montserrat"
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-lg text-center cursor-pointer transition-colors font-montserrat text-xs"
               >
-                Download PNG
+                Download
               </button>
               <button
                 onClick={() => setQrVisible(false)}
-                className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded-lg text-center cursor-pointer transition-colors font-montserrat"
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-center cursor-pointer transition-colors font-montserrat text-xs"
               >
                 Close
               </button>
@@ -335,4 +350,4 @@ const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate, oneTime, 
   );
 }
 
-export default ShortenItem;
+export default ShortenItem;
